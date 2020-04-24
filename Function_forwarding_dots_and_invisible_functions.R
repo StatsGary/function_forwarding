@@ -43,3 +43,34 @@ invisible_function <- function(x,...) {
 
 invisible_function(1000, mean = 300, sd = 30)
 
+
+# Dots vs argument lists for function forwardign
+# Using a formal parameter declaration to find the inputs passed into R
+
+
+fn1 <- function(a, b, c){
+  a + b + c
+}
+fn2 <- function(x, y, z){
+  x - y - z
+}
+
+match_from_dots <- function(dots, fn){
+  arg <- match(names(formals(fn)), names(dots))
+  dots[arg[!is.na(arg)]]
+}
+
+wrap <- function(...){
+  dots <- list(...)
+  
+  checkmate::assert_named(dots)
+  
+  list(
+    fn1 = do.call("fn1", match_from_dots(dots, fn1)),
+    fn2 = do.call("fn2", match_from_dots(dots, fn2))
+  )
+}
+
+wrap(a = 1, x = 2, c = 3, b = 2, z = 3,  y = 1)
+
+
